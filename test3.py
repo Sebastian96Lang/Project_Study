@@ -9,8 +9,7 @@ from keras.utils import to_categorical
 from random import randint
 
 
-# testing git
-# Load the original MNIST dataset
+# MINST Datensatz laden
 (train_images, train_labels), (test_images, test_labels) = mnist.load_data()
 
 # Function to randomly rotate and shift an image
