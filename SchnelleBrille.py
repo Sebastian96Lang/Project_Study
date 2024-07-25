@@ -1,8 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from keras.datasets import mnist
-from keras.src.legacy.preprocessing.image import ImageDataGenerator
-#from keras.preprocessing.image import ImageDataGenerator
+#from keras.src.legacy.preprocessing.image import ImageDataGenerator
+from keras.preprocessing.image import ImageDataGenerator
 from keras.models import Sequential
 from keras.layers import Dense, Flatten, Conv2D, MaxPooling2D, Dropout
 from keras.optimizers import Adam
@@ -68,7 +68,6 @@ for dataset in datasets:
     model.add(Flatten(input_shape=(28, 28)))  # Flatten the 28x28 images to a 1D array
     model.add(Dense(128, activation='relu'))
     model.add(Dense(64, activation='relu'))
-    model.add(Dense(64,activation='relu'))
     model.add(Dense(num_classes, activation='softmax'))
 
     # Compile the model
