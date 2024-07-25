@@ -8,7 +8,7 @@ from keras.optimizers import Adam
 from keras.utils import to_categorical
 from random import randint
 
-
+# Hallo
 # testing git
 # Load the original MNIST dataset Test
 (train_images, train_labels), (test_images, test_labels) = mnist.load_data()
