@@ -1,0 +1,41 @@
+-- Code --
+
+Testcode erstellen (modelle schnell Ergebnisse kommen (plots entfernen ect.)) Schnelle Brille
+Bester Code erstellen (Variation von Datensätzen und Konfusionsmatrix) FlickFlack
+
+
+
+-- Overleaf --
+
+Einleitung
+	Verschiedene Datensätze
+
+Theorie
+	Basic Netzwerk
+	Pooling
+	Convolutional schichten
+	Aktivierungsfunktion
+	Zeropadding
+
+Implementierung und Ergebnisse
+
+x	Basic Netzwerk
+	Filter
+		Pooling
+			3 verschiedene Anzahl an Filtern (1,2,3)
+			3 unterschiedliche Filtergrößen ((2,2),(3,3),(4,4))
+		Convolutional schichten
+			3 verschiedene Anzahl an Convolution layers  (1,2,3)
+(x)	Zeropadding (sollte besseres model kommen nochmal machen)
+	Aktivierungsfunktion
+		für ein Netzwerk 3 verschiedene Aktivierungsfunktionen für alle Layer verwenden (relu, softmax, linear)
+	
+Bestes Modell
+
+	Trainings und Testdatensätze variieren und in Tabelle schreiben
+	Konfusionsmatrix erstellen
+	
+
+Fazit und Ausblick
+	
+	
