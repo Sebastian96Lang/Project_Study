@@ -1,16 +1,15 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from keras.datasets import mnist
-from keras.preprocessing.image import ImageDataGenerator
+from keras.src.legacy.preprocessing.image import ImageDataGenerator
+#from keras.preprocessing.image import ImageDataGenerator
 from keras.models import Sequential
 from keras.layers import Dense, Flatten, Conv2D, MaxPooling2D, Dropout
 from keras.optimizers import Adam
 from keras.utils import to_categorical
 from random import randint
 
-# Hallo
-# testing git
-# Load the original MNIST dataset Test
+# Load the original MNIST dataset
 (train_images, train_labels), (test_images, test_labels) = mnist.load_data()
 
 # Function to randomly rotate and shift an image
@@ -80,7 +79,7 @@ for dataset in datasets:
     # Train the model on the rotated and shifted images
     history = model.fit(train_images, train_labels,
                         epochs=10, batch_size=128,
-                        validation_data=(test_images, test_labels))
+                        validation_data=(test_images, test_labels), verbose=0)
 
     # Rest of your code for evaluation and visualization remains the same.
 
@@ -101,12 +100,12 @@ for dataset in datasets:
     predicted_labels = np.argmax(predicted_labels, axis=1)  # Convert one-hot to class labels
 
     # Plot the images along with the predicted and true labels
-    plt.figure(figsize=(14, 14))
-    for i in range(num_images_to_show):
-        plt.subplot(10, 10, i + 1)
-        plt.imshow(selected_images[i], cmap='gray')
-        plt.title(f"Predicted: {predicted_labels[i]}\nTrue: {np.argmax(selected_labels[i])}")
-        plt.axis('off')
+    #plt.figure(figsize=(14, 14))
+    #for i in range(num_images_to_show):
+    #    plt.subplot(10, 10, i + 1)
+    #    plt.imshow(selected_images[i], cmap='gray')
+    #    plt.title(f"Predicted: {predicted_labels[i]}\nTrue: {np.argmax(selected_labels[i])}")
+    #    plt.axis('off')
 
-    plt.tight_layout()
-    plt.show()
+    #plt.tight_layout()
+    #plt.show()
