@@ -65,10 +65,11 @@ for dataset in datasets:
 
     # Build the neural network
     model = Sequential()
-    model.add(Flatten(input_shape=(28, 28)))  # Flatten the 28x28 images to a 1D array
+    model.add(Conv2D(32, kernel_size=(3, 3), activation='relu', input_shape=(28, 28, 1)))
+    model.add(MaxPooling2D(pool_size=(3, 3)))
+    model.add(Flatten())
     model.add(Dense(128, activation='relu'))
     model.add(Dense(64, activation='relu'))
-    model.add(Dense(64,activation='relu'))
     model.add(Dense(num_classes, activation='softmax'))
 
     # Compile the model
