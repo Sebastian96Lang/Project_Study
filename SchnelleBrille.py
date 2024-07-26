@@ -1,8 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from keras.datasets import mnist
-#from keras.src.legacy.preprocessing.image import ImageDataGenerator
-from keras.preprocessing.image import ImageDataGenerator
+from keras.src.legacy.preprocessing.image import ImageDataGenerator
+#from keras.preprocessing.image import ImageDataGenerator
 from keras.models import Sequential
 from keras.layers import Dense, Flatten, Conv2D, MaxPooling2D, Dropout, Reshape
 from keras.optimizers import Adam
@@ -75,7 +75,7 @@ for dataset in datasets:
 
     model.add(Dense(7 * 7 * 32, activation='relu'))
     model.add(Reshape((7, 7, 32)))
-    model.add(Conv2D(64, kernel_size=(2, 2), activation='relu'))
+    model.add(Conv2D(64, kernel_size=(4, 4), activation='relu'))
     model.add(MaxPooling2D(pool_size=(2, 2)))
     model.add(Flatten())
 

@@ -22,7 +22,7 @@ Implementierung und Ergebnisse
 x	Basic Netzwerk
 	Filter
 		Pooling
-			3 verschiedene Anzahl an Filtern (1,2,3)
+(x)			3 verschiedene Anzahl an Filtern (1,2,3)
 (x)			3 unterschiedliche Filtergrößen ((2,2),(3,3),(4,4))
 		Convolutional schichten
 			3 verschiedene Anzahl an Convolution layers  (1,2,3)
