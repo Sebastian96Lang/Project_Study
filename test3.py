@@ -70,8 +70,7 @@ for dataset in datasets:
     model.add(Flatten(input_shape=(28, 28)))  # Flatten the 28x28 images to a 1D array
     model.add(Dense(128, activation='relu'))
     model.add(Dense(64, activation='relu'))
-    model.add(Dense(64,activation='relu'))
-    model.add(Dense(num_classes, activation='softmax'))
+    model.add(Dense(num_classes, activation='relu'))
 
     # Compile the model
     model.compile(optimizer=Adam(learning_rate=0.001),

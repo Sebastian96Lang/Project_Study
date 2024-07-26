@@ -4,10 +4,11 @@ from keras.datasets import mnist
 from keras.src.legacy.preprocessing.image import ImageDataGenerator
 #from keras.preprocessing.image import ImageDataGenerator
 from keras.models import Sequential
-from keras.layers import Dense, Flatten, Conv2D, MaxPooling2D, Dropout
+from keras.layers import Dense, Flatten, Conv2D, MaxPooling2D, Dropout, Reshape
 from keras.optimizers import Adam
 from keras.utils import to_categorical
 from random import randint
+import time
 
 # Load the original MNIST dataset
 (train_images, train_labels), (test_images, test_labels) = mnist.load_data()
@@ -59,16 +60,25 @@ datasets = [
     (create_rotated_dataset(train_images, train_labels)[0],create_rotated_dataset(test_images,test_labels)[0], "Rotated Dataset"),
     (create_rotated_and_shifted_dataset(train_images, train_labels)[0], create_rotated_and_shifted_dataset(test_images, test_labels)[0], "Shifted and Rotated"),
 ]
+# Timer
+start_time = time.time()
 
 for dataset in datasets:
     train_images, test_images, dataset_name = dataset
 
     # Build the neural network
     model = Sequential()
-    model.add(Conv2D(32, kernel_size=(3, 3), activation='relu', input_shape=(28, 28, 1)))
-    model.add(MaxPooling2D(pool_size=(3, 3)))
+    model.add(Conv2D(32, kernel_size=(4, 4), activation='relu', input_shape=(28, 28, 1)))
+    model.add(MaxPooling2D(pool_size=(4, 4)))
     model.add(Flatten())
     model.add(Dense(128, activation='relu'))
+
+    model.add(Dense(7 * 7 * 32, activation='relu'))
+    model.add(Reshape((7, 7, 32)))
+    model.add(Conv2D(64, kernel_size=(2, 2), activation='relu'))
+    model.add(MaxPooling2D(pool_size=(2, 2)))
+    model.add(Flatten())
+
     model.add(Dense(64, activation='relu'))
     model.add(Dense(num_classes, activation='softmax'))
 
@@ -77,7 +87,7 @@ for dataset in datasets:
                 loss='categorical_crossentropy',
                 metrics=['accuracy'])
 
-    # Train the model on the rotated and shifted images
+    # Train the model on the according trainingset (normal,shifted,rotated and both)
     history = model.fit(train_images, train_labels,
                         epochs=10, batch_size=128,
                         validation_data=(test_images, test_labels), verbose=0)
@@ -110,3 +120,9 @@ for dataset in datasets:
 
     #plt.tight_layout()
     #plt.show()
+
+# Timer
+end_time = time.time()
+time_diff = end_time - start_time
+
+print(f"The simulation took {time_diff/60} minutes")
