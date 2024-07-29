@@ -26,9 +26,9 @@ x	Basic Netzwerk
 (x)			3 unterschiedliche Filtergrößen ((2,2),(3,3),(4,4))
 		Convolutional schichten
 (x)			3 verschiedene Anzahl an Convolution layers  (1,2,3)
-(x)	Zeropadding (sollte besseres model kommen nochmal machen)
+(x)	Zeropadding
 	Aktivierungsfunktion
-		für ein Netzwerk 3 verschiedene Aktivierungsfunktionen für alle Layer verwenden (relu, softmax, linear, vllt. noch leaky_relu und elu bzw. irgendwas exponentielles)
+		für ein Netzwerk 3 verschiedene Aktivierungsfunktionen für alle Layer verwenden (relu, softmax, linear, leaky_relu und elu)
 	
 Bestes Modell
 
