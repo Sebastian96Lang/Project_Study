@@ -42,6 +42,7 @@ def create_rotated_dataset(images, labels):
     rotated_images = np.array([random_rotate(image) for image in images])
     return rotated_images, labels
 
+#### ---------------------------------------------------------------------------------------- ####
 
 # Normalisieren der Pixel (Graustufen von 0 bis 255) [0, 1]
 train_images = train_images.astype('float32') / 255.0
@@ -65,42 +66,45 @@ start_time = time.time()
 # Variable für Aktivierungsfunktionen (Nur für Dense)
 activation_func = 'linear'
 
+#### --------------------------- Erstellen des Neurale Netzwerks ---------------------------- ####
+#### ---------------------------------------------------------------------------------------- ####
+# Aus for-Schleife rausgezogen da eh immer das gleiche Netzwerk verwendet wird
+model = Sequential()
+# Erste und zweite Konv./Pooling Layer (+ Zeropadding)
+model.add(ZeroPadding2D(padding=(1, 1), input_shape=(28, 28, 1)))
+model.add(Conv2D(32, kernel_size=(3, 3), activation='relu'))
+model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(ZeroPadding2D(padding=(1, 1)))
+model.add(Conv2D(64, kernel_size=(3, 3), activation='relu'))
+model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(Flatten())
+
+# Dropout- und erste Dense Layer
+model.add(Dropout(0.2))
+model.add(Dense(128, activation=activation_func))
+
+# Dritte Layer mit Konv./Pooling (+ Zeropadding)
+model.add(Dense(7*7*32,activation=activation_func))
+model.add(Reshape((7,7,32)))
+model.add(ZeroPadding2D(padding=(1, 1)))
+model.add(Conv2D(32, kernel_size=(3, 3), activation='relu', input_shape=(28, 28, 1)))
+model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(Flatten())
+
+# Zweite Dropout und Dense Layer + finale Layer mit softmax
+model.add(Dropout(0.2))
+model.add(Dense(64, activation=activation_func))
+model.add(Dense(num_classes, activation='softmax'))
+
+# Modell kompilieren
+model.compile(optimizer=Adam(learning_rate=0.001), loss='categorical_crossentropy', metrics=['accuracy'])
+#### ---------------------------------------------------------------------------------------- ####
+#### ---------------------------------------------------------------------------------------- ####
+
+#### --------------------------- Trainieren und Evaluieren des NN --------------------------- ####
+#### ---------------------------------------------------------------------------------------- ####
 for dataset in datasets:
     train_images, test_images, dataset_name = dataset
-
-    # Initialisiere das Neurale Netzwerk
-    model = Sequential()
-    # Erste und zweite Konv./Pooling Layer (+ Zeropadding)
-    model.add(ZeroPadding2D(padding=(1, 1), input_shape=(28, 28, 1)))
-    model.add(Conv2D(32, kernel_size=(3, 3), activation='relu'))
-    model.add(MaxPooling2D(pool_size=(2, 2)))
-    model.add(ZeroPadding2D(padding=(1, 1)))
-    model.add(Conv2D(64, kernel_size=(3, 3), activation='relu'))
-    model.add(MaxPooling2D(pool_size=(2, 2)))
-    model.add(Flatten())
-
-    # Dropout- und erste Dense Layer
-    model.add(Dropout(0.2))
-    model.add(Dense(128, activation=activation_func))
-
-    # Dritte Layer mit Konv./Pooling (+ Zeropadding)
-    model.add(Dense(7*7*32,activation=activation_func))
-    model.add(Reshape((7,7,32)))
-    model.add(ZeroPadding2D(padding=(1, 1)))
-    model.add(Conv2D(32, kernel_size=(3, 3), activation='relu', input_shape=(28, 28, 1)))
-    model.add(MaxPooling2D(pool_size=(2, 2)))
-    model.add(Flatten())
-
-    # Zweite Dropout und Dense Layer + finale Layer mit softmax
-    model.add(Dropout(0.2))
-    model.add(Dense(64, activation=activation_func))
-    model.add(Dense(num_classes, activation='softmax'))
-
-
-    # Modell kompilieren
-    model.compile(optimizer=Adam(learning_rate=0.001),
-                loss='categorical_crossentropy',
-                metrics=['accuracy'])
 
     # Trainieren des Modells mit dem aktuellen Datensatz (normal,shifted,rotated and both)
     history = model.fit(train_images, train_labels,
@@ -111,7 +115,7 @@ for dataset in datasets:
     test_loss, test_accuracy = model.evaluate(test_images, test_labels, verbose=0)
     print(f'Genauigkeit des Netzwerkes mit dem "{dataset_name}" Datensatz: {test_accuracy * 100:.2f}%')
 
-    # 100 zufällige Ergebisse wählen (zum Plotten)
+    # Zufällige Ergebisse wählen (zum Plotten)
     num_images_to_show = 100
     random_indices = np.random.randint(0, len(test_images), num_images_to_show)
 
@@ -123,16 +127,16 @@ for dataset in datasets:
     predicted_labels = model.predict(selected_images)
     predicted_labels = np.argmax(predicted_labels, axis=1)  # Convert one-hot to class labels
 
-    # Plotten der 100 zufällig ausgewählten Testbeispiele
-    #plt.figure(figsize=(14, 14))
-    #for i in range(num_images_to_show):
-    #    plt.subplot(10, 10, i + 1)
-    #    plt.imshow(selected_images[i], cmap='gray')
-    #    plt.title(f"Predicted: {predicted_labels[i]}\nTrue: {np.argmax(selected_labels[i])}")
-    #    plt.axis('off')
+    # Plotten der 100 zufällig ausgewählten Testbeispiele (Reduziert auf 72)
+    plt.figure(figsize=(14, 14))
+    for i in range(num_images_to_show-28):
+        plt.subplot(8, 9, i + 1)
+        plt.imshow(selected_images[i], cmap='gray')
+        plt.title(f"Predicted: {predicted_labels[i]}\nTrue: {np.argmax(selected_labels[i])}", fontsize=7)
+        plt.axis('off')
 
-    #plt.tight_layout()
-    #plt.show()
+    plt.tight_layout()
+    plt.show()
 
 # Timer
 end_time = time.time()
