@@ -1,12 +1,14 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from keras.datasets import mnist
-from keras.src.legacy.preprocessing.image import ImageDataGenerator
-#from keras.preprocessing.image import ImageDataGenerator
+#from keras.src.legacy.preprocessing.image import ImageDataGenerator
+from keras.preprocessing.image import ImageDataGenerator
 from keras.models import Sequential
 from keras.layers import Dense, Flatten, Conv2D, MaxPooling2D, Dropout, Reshape, ZeroPadding2D
 from keras.optimizers import Adam
 from keras.utils import to_categorical
+from sklearn.metrics import confusion_matrix
+import seaborn as sns
 from random import randint
 import time
 
@@ -26,7 +28,7 @@ def random_shift(image):
     return np.squeeze(ImageDataGenerator().apply_transform(image, {'theta': 0, 'tx': shift[0], 'ty': shift[1]}), axis=-1)
 
 def random_rotate(image):
-    angle = np.random.randint(-110, 110)  # Random angle between -30 and 30 degrees
+    angle = np.random.randint(-45, 45)  # Random angle between -45 and 45 degrees
     image = np.expand_dims(image, axis=-1)  # Add channel dimension for the generator
     return np.squeeze(ImageDataGenerator().apply_transform(image, {'theta': angle, 'tx': 0, 'ty': 0}), axis=-1)
 
@@ -119,23 +121,47 @@ for dataset in datasets:
     num_images_to_show = 100
     random_indices = np.random.randint(0, len(test_images), num_images_to_show)
 
+    #
+
+    # Vorhersagen mit Hilfe des Modells treffen
+    predicted_labels = model.predict(test_images)
+    predicted_labels = np.argmax(predicted_labels, axis=1)  # Convert one-hot to class labels
+
+    # Convert the one-hot encoded test labels to class labels
+    true_labels = np.argmax(test_labels, axis=1)
+
+    # Generate the confusion matrix
+    cm = confusion_matrix(true_labels, predicted_labels)
+
+    # Plot the confusion matrix
+    plt.figure(figsize=(10, 7))
+    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=range(10), yticklabels=range(10))
+    plt.xlabel('Predicted Labels')
+    plt.ylabel('True Labels')
+    plt.title(f'Confusion Matrix for {dataset_name}')
+    plt.show()
+
+    # Zufällige Ergebisse wählen (zum Plotten)
+    num_images_to_show = 100
+    random_indices = np.random.randint(0, len(test_images), num_images_to_show)
+
     # Bilder und dazugehörige Label laden
     selected_images = test_images[random_indices]
     selected_labels = test_labels[random_indices]
 
-    # Vorhersagen mit Hilfe des Modells treffen
-    predicted_labels = model.predict(selected_images)
-    predicted_labels = np.argmax(predicted_labels, axis=1)  # Convert one-hot to class labels
+    # Vorhersagen mit Hilfe des Modells treffen für ausgewählte Bilder
+    selected_predicted_labels = model.predict(selected_images)
+    selected_predicted_labels = np.argmax(selected_predicted_labels, axis=1)  # Convert one-hot to class labels
 
-    # Plotten der 100 zufällig ausgewählten Testbeispiele (Reduziert auf 72)
-    plt.figure(figsize=(14, 14))
-    for i in range(num_images_to_show-28):
-        plt.subplot(8, 9, i + 1)
+    # Plotten der 100 zufällig ausgewählten Testbeispiele (Reduziert auf 30)
+    plt.figure(figsize=(7, 7))
+    for i in range(num_images_to_show-70):
+        plt.subplot(5, 6, i + 1)
         plt.imshow(selected_images[i], cmap='gray')
-        plt.title(f"Predicted: {predicted_labels[i]}\nTrue: {np.argmax(selected_labels[i])}", fontsize=7)
+        plt.title(f"Predicted: {selected_predicted_labels[i]}\nTrue: {np.argmax(selected_labels[i])}", fontsize=7)
         plt.axis('off')
 
-    plt.tight_layout()
+    plt.tight_layout(pad = 1.0)
     plt.show()
 
 # Timer
