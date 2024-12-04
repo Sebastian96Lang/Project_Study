@@ -15,7 +15,7 @@ import time
 
 # Funktionen um den MNIST Datensatzt zu versetzen und rotieren (+Beides auf einmal)
 def random_rotate_and_shift_image(image):
-    angle = np.random.randint(-110, 110)  # Random angle between -30 and 30 degrees
+    angle = np.random.randint(-110, 110)  # Random angle between -110 and 110 degrees
     shift = np.random.randint(-8, 8, size=2)  # Random shift in both x and y directions
     image = np.expand_dims(image, axis=-1)  # Add channel dimension for the generator
     return np.squeeze(ImageDataGenerator().apply_transform(image, {'theta': angle, 'tx': shift[0], 'ty': shift[1]}), axis=-1)
@@ -26,7 +26,7 @@ def random_shift(image):
     return np.squeeze(ImageDataGenerator().apply_transform(image, {'theta': 0, 'tx': shift[0], 'ty': shift[1]}), axis=-1)
 
 def random_rotate(image):
-    angle = np.random.randint(-110, 110)  # Random angle between -30 and 30 degrees
+    angle = np.random.randint(-110, 110)  # Random angle between -110 and 110 degrees
     image = np.expand_dims(image, axis=-1)  # Add channel dimension for the generator
     return np.squeeze(ImageDataGenerator().apply_transform(image, {'theta': angle, 'tx': 0, 'ty': 0}), axis=-1)
 
@@ -72,10 +72,10 @@ for dataset in datasets:
     model = Sequential()
     # Erste und zweite Konv./Pooling Layer (+ Zeropadding)
     model.add(ZeroPadding2D(padding=(1, 1), input_shape=(28, 28, 1)))
-    model.add(Conv2D(32, kernel_size=(3, 3), activation='relu'))
+    model.add(Conv2D(32, kernel_size=(4, 4), activation='relu'))
     model.add(MaxPooling2D(pool_size=(2, 2)))
     model.add(ZeroPadding2D(padding=(1, 1)))
-    model.add(Conv2D(64, kernel_size=(3, 3), activation='relu'))
+    model.add(Conv2D(32, kernel_size=(3, 3), activation='relu'))
     model.add(MaxPooling2D(pool_size=(2, 2)))
     model.add(Flatten())
 
@@ -84,10 +84,10 @@ for dataset in datasets:
     model.add(Dense(128, activation=activation_func))
 
     # Dritte Layer mit Konv./Pooling (+ Zeropadding)
-    model.add(Dense(7*7*32,activation=activation_func))
-    model.add(Reshape((7,7,32)))
+    model.add(Dense(28*28*1,activation=activation_func))
+    model.add(Reshape((28,28,1)))
     model.add(ZeroPadding2D(padding=(1, 1)))
-    model.add(Conv2D(32, kernel_size=(3, 3), activation='relu', input_shape=(28, 28, 1)))
+    model.add(Conv2D(32, kernel_size=(4, 4), activation='relu', input_shape=(28, 28, 1)))
     model.add(MaxPooling2D(pool_size=(2, 2)))
     model.add(Flatten())
 
