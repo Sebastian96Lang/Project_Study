@@ -4,7 +4,7 @@ from keras.datasets import mnist
 #from keras.src.legacy.preprocessing.image import ImageDataGenerator
 from keras.preprocessing.image import ImageDataGenerator
 from keras.models import Sequential
-from keras.layers import Dense, Flatten, Conv2D, MaxPooling2D, Dropout, Reshape, ZeroPadding2D
+from keras.layers import Dense, Flatten, Conv2D, MaxPooling2D, Dropout, Reshape, ZeroPadding2D, SpatialDropout2D
 from keras.optimizers import Adam
 from keras.utils import to_categorical
 from sklearn.metrics import confusion_matrix
@@ -72,30 +72,37 @@ activation_func = 'linear'
 #### ---------------------------------------------------------------------------------------- ####
 # Aus for-Schleife rausgezogen da eh immer das gleiche Netzwerk verwendet wird
 model = Sequential()
-# Erste und zweite Konv./Pooling Layer (+ Zeropadding)
-model.add(ZeroPadding2D(padding=(1, 1), input_shape=(28, 28, 1)))
+
+# First and second Conv./Pooling layers (+ ZeroPadding)
+model.add(ZeroPadding2D(padding=(1, 1), input_shape=(28, 28, 1))) 
 model.add(Conv2D(32, kernel_size=(3, 3), activation='relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(ZeroPadding2D(padding=(1, 1)))
-model.add(Conv2D(64, kernel_size=(3, 3), activation='relu'))
+model.add(ZeroPadding2D(padding=(1, 1))) 
+model.add(Conv2D(32, kernel_size=(3, 3), activation='relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
+
+# Spatial Dropout after Conv layers
+model.add(SpatialDropout2D(0.2))  # Replacing Dropout with SpatialDropout2D
+
 model.add(Flatten())
 
-# Dropout- und erste Dense Layer
-model.add(Dropout(0.2))
-model.add(Dense(128, activation=activation_func))
+# First Dense Layer
+model.add(Dense(128, activation='relu'))
 
-# Dritte Layer mit Konv./Pooling (+ Zeropadding)
-model.add(Dense(7*7*32,activation=activation_func))
-model.add(Reshape((7,7,32)))
-model.add(ZeroPadding2D(padding=(1, 1)))
-model.add(Conv2D(32, kernel_size=(3, 3), activation='relu', input_shape=(28, 28, 1)))
-model.add(MaxPooling2D(pool_size=(2, 2)))
+# Third Conv./Pooling layers (+ ZeroPadding)
+model.add(Dense(28 * 28 * 1, activation='relu'))
+model.add(Reshape((28, 28, 1)))
+model.add(ZeroPadding2D(padding=(1, 1))) 
+model.add(Conv2D(32, kernel_size=(4, 4), activation='relu'))
+model.add(MaxPooling2D(pool_size=(4, 4)))
+
+# Spatial Dropout after additional Conv layers
+model.add(SpatialDropout2D(0.2))  # Adding SpatialDropout2D here as well
+
 model.add(Flatten())
 
-# Zweite Dropout und Dense Layer + finale Layer mit softmax
-model.add(Dropout(0.2))
-model.add(Dense(64, activation=activation_func))
+# Second Dense Layer + Final Layer
+model.add(Dense(64, activation='relu'))
 model.add(Dense(num_classes, activation='softmax'))
 
 # Modell kompilieren
